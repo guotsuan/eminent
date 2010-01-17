@@ -107,17 +107,20 @@ awful.widget.taglist.label.all = function (t, args)
     end
 end
 
--- Update hidden status
-for screen=1, capi.screen.count() do
-    local uc = function () gettags(screen) end
 
+-- Update hidden status
+local function uc(c) gettags(c.screen) end
+local function ut(s, t) gettags(s.index) end
+
+capi.client.add_signal("unmanage", uc)
+capi.client.add_signal("new", function(c)
+    c:add_signal("property::screen", uc)
+    c:add_signal("tagged", uc)
+    c:add_signal("untagged", uc)
+end)
+
+for screen=1, capi.screen.count() do
     awful.tag.attached_add_signal(screen, "property::selected", uc)
-    capi.screen[screen]:add_signal("tag::attach", uc)
-    capi.screen[screen]:add_signal("tag::detach", uc)
-    capi.client.add_signal("new", function(c)
-        c:add_signal("property::screen", uc)
-        c:add_signal("tagged", uc)
-        c:add_signal("untagged", uc)
-    end)
-    capi.client.add_signal("unmanage", uc)
+    capi.screen[screen]:add_signal("tag::attach", ut)
+    capi.screen[screen]:add_signal("tag::detach", ut)
 end
