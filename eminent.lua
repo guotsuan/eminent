@@ -20,7 +20,6 @@
 local ipairs = ipairs
 local pairs = pairs
 local awful = require("awful")
-local naughty = require("naughty")
 local table = table
 local capi = {
     tag = tag,
