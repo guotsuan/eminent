@@ -32,7 +32,8 @@ local capi = {
 }
 
 -- Eminent: Effortless wmii-style dynamic tagging
-module("eminent")
+local eminent = {}
+
 
 -- Grab the original functions we're replacing
 local deflayout = nil
@@ -128,3 +129,5 @@ for screen=1, capi.screen.count() do
     capi.screen[screen]:connect_signal("tag::history::update", ut)
     --capi.screen[screen]:connect_signal("tag::detach", ut)
 end
+
+return eminent
