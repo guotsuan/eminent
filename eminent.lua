@@ -31,6 +31,8 @@ local capi = {
     keygrabber = keygrabber,
 }
 
+local getscreen = capi.tag.getscreen
+
 -- Eminent: Effortless wmii-style dynamic tagging
 local eminent = {}
 
@@ -114,17 +116,29 @@ end
 
 -- Update hidden status
 local function uc(c) gettags(c.screen) end
-local function ut(s, t) gettags(s.index) end
+--local function ut(t) gettags(t.screen) end
+local function ut(s,t) gettags(s.index) end
+
 
 capi.client.connect_signal("unmanage", uc)
 capi.client.connect_signal("new", function(c)
     c:connect_signal("property::screen", uc)
+    c:connect_signal("property::urgent", uc)
     c:connect_signal("tagged", uc)
     c:connect_signal("untagged", uc)
+    c:connect_signal("focus", uc)
+    c:connect_signal("unfocus", uc)
 end)
 
 for screen=1, capi.screen.count() do
-    awful.tag.attached_connect_signal(screen, "property::selected", uc)
+    awful.tag.attached_connect_signal(screen, "property::selected", ut)
+    awful.tag.attached_connect_signal(screen, "property::icon", ut)
+    awful.tag.attached_connect_signal(screen, "property::hide", ut)
+    awful.tag.attached_connect_signal(screen, "property::name", ut)
+    awful.tag.attached_connect_signal(screen, "property::activated", ut)
+    awful.tag.attached_connect_signal(screen, "property::screen", ut)
+    awful.tag.attached_connect_signal(screen, "property::index", ut)
+
     --awful.tag.attached_connect_signal(screen, "tag::history::update",uc)
     capi.screen[screen]:connect_signal("tag::history::update", ut)
     --capi.screen[screen]:connect_signal("tag::detach", ut)
