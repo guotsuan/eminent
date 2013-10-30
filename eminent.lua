@@ -74,7 +74,7 @@ end
 -- View tag by relative index
 awful.tag.viewidx = function (i, screen)
     -- Hide tags
-    local s = screen and screen.index or capi.mouse.screen
+    local s = screen or capi.mouse.screen
     --local ctags = capi.screen[s]:tags()
     local ctags = awful.tag.gettags(s)
     local tags = gettags(s)
