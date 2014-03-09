@@ -92,6 +92,7 @@ awful.tag.viewidx = function (i, screen)
         if #ctags >= tagidx+1 then
             -- Focus next
             ctags[tagidx+1].selected = true
+            awful.tag.setproperty(ctags[tagidx+1], "hide", false)
         else
             -- Create new
             local tag = capi.tag { name = ""..(tagidx+1) }
