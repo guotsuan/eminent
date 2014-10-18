@@ -37,6 +37,10 @@ local getscreen = capi.tag.getscreen
 local eminent = {}
 
 
+--- Create new tag when scrolling right from the last tag
+eminent.create_new_tag = true
+
+
 -- Grab the original functions we're replacing
 local deflayout = nil
 local orig = {
@@ -85,7 +89,9 @@ awful.tag.viewidx = function (i, screen)
     local tagidx = awful.util.table.hasitem(ctags, sel)
 
     -- Create a new tag if needed
-    if selidx == #tags and i == 1 and #sel:clients() > 0 then
+    if eminent.create_new_tag and
+       selidx == #tags and i == 1 and #sel:clients() > 0
+    then
         -- Deselect all
         awful.tag.viewnone(s)
 
