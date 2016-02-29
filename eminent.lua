@@ -39,6 +39,9 @@ local tag = require("awful.tag")
 -- Eminent: Effortless wmii-style dynamic tagging
 local eminent = {}
 
+--- Create new tag when scrolling right from the last tag
+eminent.create_new_tag = true
+
 -- simply change the behavior of the filter will do the trick
 awful.widget.taglist.filter.all = awful.widget.taglist.filter.noempty
 
@@ -61,6 +64,7 @@ end
 awful.tag.viewidx = function (i, screen)
     local screen = screen or ascreen.focused()
     local tags = gettags(screen)
+    local full_tags = tag.gettags(screen)
     local showntags = {}
     for k, t in ipairs(tags) do
         if not tag.getproperty(t, "hide") then
@@ -68,13 +72,25 @@ awful.tag.viewidx = function (i, screen)
         end
     end
     local sel = tag.selected(screen)
+    local tagidx = util.table.hasitem(tags, sel)
     tag.viewnone(screen)
-    for k, t in ipairs(showntags) do
-        if t == sel then
-            showntags[util.cycle(#showntags, k + i)].selected = true
+
+    if eminent.create_new_tag and #tags >= tagidx+1 or #sel:clients() == 0 then
+        for k, t in ipairs(showntags) do
+            if t == sel then
+                showntags[util.cycle(#showntags, k + i)].selected = true
+            end
+        end
+    else
+        for k, t in ipairs(full_tags) do
+            if t == sel then
+                full_tags[util.cycle(#full_tags, k + i)].selected = true
+            end
         end
     end
+
     capi.screen[screen]:emit_signal("tag::history::update")
+
 end
 
 return eminent
