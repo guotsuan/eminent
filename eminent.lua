@@ -75,16 +75,16 @@ awful.tag.viewidx = function (i, screen)
     local tagidx = util.table.hasitem(tags, sel)
     tag.viewnone(screen)
 
-    if eminent.create_new_tag and #tags >= tagidx+1 or #sel:clients() == 0 then
-        for k, t in ipairs(showntags) do
-            if t == sel then
-                showntags[util.cycle(#showntags, k + i)].selected = true
-            end
-        end
-    else
+    if eminent.create_new_tag and #tags < tagidx+1 and #sel:clients() ~= 0 and i == 1 then
         for k, t in ipairs(full_tags) do
             if t == sel then
                 full_tags[util.cycle(#full_tags, k + i)].selected = true
+            end
+        end
+    else
+        for k, t in ipairs(showntags) do
+            if t == sel then
+                showntags[util.cycle(#showntags, k + i)].selected = true
             end
         end
     end
