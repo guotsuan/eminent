@@ -28,9 +28,6 @@ local capi = {
     mouse = mouse,
     client = client,
     screen = screen,
-    wibox = wibox,
-    timer = timer,
-    keygrabber = keygrabber,
 }
 
 local tag = require("awful.tag")
@@ -62,7 +59,12 @@ local function gettags(screen)
 end
 
 awful.tag.viewidx = function (i, screen)
-    local screen = screen or ascreen.focused()
+    local screen
+    if type(ascreen.focused) == "function" then 
+        screen = screen or ascreen.focused() 
+    else
+        screen =screen or capi.mouse.screen
+    end
     local tags = gettags(screen)
     local full_tags = tag.gettags(screen)
     local showntags = {}
