@@ -49,10 +49,21 @@ awful.widget.taglist.filter.all = awful.widget.taglist.filter.noempty
 local function gettags(screen)
     local tags = {}
 
-    for k, t in ipairs(tag.gettags(screen)) do
-        if t.selected or #t:clients() > 0 then
-            table.insert(tags, t)
+
+    if type(screen.selected_tag) == 'tag' then
+        for k, t in ipairs(screen.tags) do
+            if t.selected or #t:clients() > 0 then
+                table.insert(tags, t)
+            end
         end
+
+    else
+        for k, t in ipairs(tag.gettags(screen)) do
+            if t.selected or #t:clients() > 0 then
+                table.insert(tags, t)
+            end
+        end
+
     end
 
     return tags
@@ -65,15 +76,30 @@ awful.tag.viewidx = function (i, screen)
     else
         screen =screen or capi.mouse.screen
     end
+
     local tags = gettags(screen)
-    local full_tags = tag.gettags(screen)
+    local full_tags
+
+
+    if type(screen.selected_tag) == 'tag' then
+        full_tags = screen.tags
+    else
+        full_tags = tag.gettags(screen)
+    end
+
     local showntags = {}
     for k, t in ipairs(tags) do
         if not tag.getproperty(t, "hide") then
             table.insert(showntags, t)
         end
     end
-    local sel = tag.selected(screen)
+    local sel 
+    if type(screen.selected_tag) == 'tag' then
+        sel = screen.selected_tag
+    else
+        sel = tag.selected(screen)
+    end
+
     local tagidx = util.table.hasitem(tags, sel)
     tag.viewnone(screen)
 
