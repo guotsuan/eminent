@@ -49,7 +49,6 @@ awful.widget.taglist.filter.all = awful.widget.taglist.filter.noempty
 local function gettags(screen)
     local tags = {}
 
-
     if type(screen.selected_tag) == 'tag' then
         for k, t in ipairs(screen.tags) do
             if t.selected or #t:clients() > 0 then
